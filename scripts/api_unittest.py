@@ -119,25 +119,26 @@ class DWANApiTestsBasic(unittest.TestCase, DWANApiTests):
     '''
 
     def test_A10_create_annotation(self):
-        annotation = ('<?xml version="1.0" encoding="UTF-8"?>' +
-            '<annotation xmlns="http://www.dasish.eu/ns/addit"' +
-            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
-            'xmlns:xhtml="http://www.w3.org/1999/xhtml/"' +
-            'xsi:schemaLocation="http://www.dasish.eu/ns/addit http://lux17.mpi.nl/schemacat/schemas/s16/files/DASISH-schema.xsd"' +
-            'URI="x"' +
-            'ownerRef="y">' +
+        annotation = ('<?xml version="1.0" encoding="UTF-8"?> ' +
+            '<annotation xmlns="http://www.dasish.eu/ns/addit" ' +
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+            'xsi:schemaLocation="http://www.dasish.eu/ns/addit http://lux17.mpi.nl/ds/webannotator-basic/SCHEMA/DASISH-schema.xsd" ' +
+			'xmlns:xhtml="http://www.w3.org/1999/xhtml" ' +
+            'xml:id="A0000000-0000-0000-2014-072812390200" ' +
+			'href="/ds/webannotator-basic/api/annotations/A0000000-0000-0000-2014-072812390200"> ' + 
+            '<ownerHref>/ds/webannotator-basic/api/principals/00000000-0000-0000-2014-072812390200</ownerHref> ' +
             '<headline>DWAN API Unittest annotation</headline>' +
-            '<lastModified>2014-07-28T12:00:00.000+02:00</lastModified>' +
+            '<lastModified>2014-09-30T10:00:00.000Z</lastModified>' +
             '<body>' +
             ' <xmlBody>' +
             '  <mimeType>application/xml+xhtml</mimeType>' +
-            '  <xhtml:span style="background-color:rgb(0,0,153);color:rgb(255,255,255);border: thick solid rgb(0, 0, 153);">X pointer experiment tmpTarget </xhtml:span>' +
+            '  <xhtml:span title="December 1989" style="background-color: rgb( 44, 254,  81);color:rgb(0,0,0);">December 1989</xhtml:span>' +
             ' </xmlBody>' +
             '</body>' +
             '<targets>' +
-            ' <targetInfo ref="tmpTarget">' +
-            '  <link>https://developer.mozilla.org/en-US/docs/Building_an_Extension#xpointer(start-point(string-range(//h2[@id="Create_a_Chrome_Manifest"]/text()[1],'',0))/range-to(string-range(//h2[@id="Create_a_Chrome_Manifest"]/text()[1],'',24)))</link>' +
-            '  <version>1.0</version>' +
+            ' <targetInfo href="/ds/webannotator-basic/api/targets/00000000-0000-0000-2014-072812390200">' +
+            '  <link>http://en.wikipedia.org/wiki/Python_(programming_language)#xpointer(start-point(string-range(//div[@id="toc"]/following-sibling::blockquote[1]/p[1]/text()[1],'',23))/range-to(string-range(//div[@id="toc"]/following-sibling::blockquote[1]/p[1]/text()[1],'',36)))</link>' +
+            '  <version>2014-07-28T09:37:02.000Z</version>' +
             ' </targetInfo>' +
             '</targets>' +
             '<permissions public="read">' +
