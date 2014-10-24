@@ -5,8 +5,8 @@ import unittest
 import requests
 import cookielib
 import time
+import datetime
 from xml2json import Xml2Json
-# from requests.auth import HTTPBasicAuth
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select  # for <SELECT> HTML form
 
@@ -16,7 +16,7 @@ class DWANApiTests():
     server_url = ''
     user = ''
     pwd = ''
-    user_id = ''
+    prid = ''
     s = requests.Session()
     cookiejar = cookielib.LWPCookieJar()
 
@@ -80,7 +80,7 @@ class DWANApiTests():
         r = self.s.get(self.server_url + 'api/authentication/principal', cookies=self.cookiejar)
         try:
             data = Xml2Json(r.text).result
-            self.user_id = data['principal'][1]['xml:id']
+            self.prid = data['principal'][1]['xml:id']
         except:
             pass
         return r
@@ -110,6 +110,7 @@ class DWANApiTestsBasic(unittest.TestCase, DWANApiTests):
     def test_A02_login_state(self):
         r = self.ask_principal_data()
         self.assertEqual(r.status_code, 200)
+        print '\nPRID=' + self.prid
 
     ''' Place for the specific tests
     '''
@@ -119,16 +120,18 @@ class DWANApiTestsBasic(unittest.TestCase, DWANApiTests):
     '''
 
     def test_A10_create_annotation(self):
+        r = self.ask_principal_data()
+        now = datetime.datetime.now().isoformat()
         annotation = ('<?xml version="1.0" encoding="UTF-8"?> ' +
             '<annotation xmlns="http://www.dasish.eu/ns/addit" ' +
             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
             'xsi:schemaLocation="http://www.dasish.eu/ns/addit http://lux17.mpi.nl/ds/webannotator-basic/SCHEMA/DASISH-schema.xsd" ' +
-			'xmlns:xhtml="http://www.w3.org/1999/xhtml" ' +
-            'xml:id="A0000000-0000-0000-2014-072812390200" ' +
-			'href="/ds/webannotator-basic/api/annotations/A0000000-0000-0000-2014-072812390200"> ' + 
-            '<ownerHref>/ds/webannotator-basic/api/principals/00000000-0000-0000-2014-072812390200</ownerHref> ' +
+            'xmlns:xhtml="http://www.w3.org/1999/xhtml" ' +
+            'xml:id="A0000000-0000-0000-2014" ' +
+            'href="/ds/webannotator-basic/api/annotations/0"> ' +
+            '<ownerHref>/ds/webannotator-basic/api/principals/' + self.prid + '</ownerHref> ' +
             '<headline>DWAN API Unittest annotation</headline>' +
-            '<lastModified>2014-09-30T10:00:00.000Z</lastModified>' +
+            '<lastModified>' + now + '</lastModified>' +
             '<body>' +
             ' <xmlBody>' +
             '  <mimeType>application/xml+xhtml</mimeType>' +
@@ -138,7 +141,7 @@ class DWANApiTestsBasic(unittest.TestCase, DWANApiTests):
             '<targets>' +
             ' <targetInfo href="/ds/webannotator-basic/api/targets/00000000-0000-0000-2014-072812390200">' +
             '  <link>http://en.wikipedia.org/wiki/Python_(programming_language)#xpointer(start-point(string-range(//div[@id="toc"]/following-sibling::blockquote[1]/p[1]/text()[1],'',23))/range-to(string-range(//div[@id="toc"]/following-sibling::blockquote[1]/p[1]/text()[1],'',36)))</link>' +
-            '  <version>2014-07-28T09:37:02.000Z</version>' +
+            '  <version>' + now + '</version>' +
             ' </targetInfo>' +
             '</targets>' +
             '<permissions public="read">' +
@@ -150,6 +153,16 @@ class DWANApiTestsBasic(unittest.TestCase, DWANApiTests):
         r = self.s.post(self.server_url + 'api/annotations', data=annotation, headers=headers)
         self.assertEqual(r.status_code, 200)
 
+    def test_A11_retrieve_annotation_by_owner(self):
+        r = self.ask_principal_data()
+        params = '?owner=' + self.prid
+        r = self.s.get(self.server_url + 'api/annotations' + params, cookies=self.cookiejar)
+        self.assertEqual(r.status_code, 200)
+        try:
+            data = Xml2Json(r.text).result
+            print data
+        except:
+            print 'Error on Xml2Json\n'
 
     ''' Tests for LOGOUT
     '''
